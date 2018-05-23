@@ -35,10 +35,10 @@ while vidx <= length(varargin)
             vidx = vidx+2;
         case 'Last'
             last_day = varargin{vidx+1};
-            sub_plot=true;
+            sub_plot=false;
             vidx=vidx+2;
         otherwise
-            error('Bad argument:  %s', varargin{vidx});
+            error('Bad arugment:  %s', varargin{vidx});
             return;
     end
 end

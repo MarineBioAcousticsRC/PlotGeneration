@@ -92,8 +92,8 @@ while vidx <= length(varargin)
             save = varargin{vidx+1};
             vidx =vidx+2;
         otherwise
-            warning ('Bad argument:  %s', varargin{vidx});
-            vidx =vidx+2;
+            error('Bad arugment:  %s', varargin{idx});
+            return;
     end
 end
 

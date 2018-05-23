@@ -42,6 +42,7 @@ function plots = visDiel(queryEng, varargin)
 % deployment inputs. e.g. datenum([YYYY MM DD HH MM SS])
 % 'Start',datenum - start of plotting
 % 'End', datenum - end of plotting
+% 'UserID', string - restrict documents to a specific user
 % 'Lunar', True | (False) - plot lunar illumination for the given
 % deployment
 %
@@ -74,8 +75,8 @@ function plots = visDiel(queryEng, varargin)
 start = false; %default do not use user supplied dates
 stop = false;
 save=0;%default do not save
-xtick = 3; %default 3
-ytick = 7; %default 7
+XTick = 3; %default 3
+YTick = 7; %default 7
 comment = false;
 resolution=60; %hourly resolution
 lunar = false;
@@ -152,10 +153,10 @@ while vidx <= length(varargin)
             resolution = varargin{vidx+1};
             vidx=vidx+2;
         case 'XTick'
-            xtick = varargin{vidx+1};
+            XTick = varargin{vidx+1};
             vidx = vidx+2;
         case 'YTick'
-            ytick = varargin{vidx+1};
+            YTick = varargin{vidx+1};
             vidx = vidx+2;
         case 'Start'
             usr_start = varargin{vidx+1};
@@ -177,8 +178,8 @@ while vidx <= length(varargin)
             save = true;
             vidx =vidx+2;            
         otherwise
-            warning('Bad arugment:  %s', varargin{vidx});
-            vidx =vidx+2; 
+            error('Bad arugment:  %s', varargin{idx});
+            return;
     end
 end
 
@@ -466,7 +467,7 @@ for spidx=1:spp_count
                             queries(quer_count).Site,'Deployment',...
                             queries(quer_count).Deployment,...
                             'SpeciesID',queries(quer_count).SpeciesID,'Call',...
-                            queries(quer_count).Call);
+                            queries(quer_count).Call,'Granularity',granularity);
                     end
                     
                     if isempty(queries(quer_count).Detections)
@@ -652,19 +653,19 @@ for n=1:length(plots)
     % add diel information
     nightH = visPresence(plots(n).NightTime, 'Color', 'black', ...
         'LineStyle', 'none', 'Transparency', .15, ...
-        'Resolution_m', 1/60,'DateTickInterval',ytick,...
+        'Resolution_m', 1/60,'DateTickInterval',YTick,...
         'DateRange', [start, stop], 'HourTickInterval',...
-        xtick);
+        XTick);
     
     if lunar
         illu = dbGetLunarIllumination(queryEng, droplat, droplon, plots(n).Effort(1), plots(n).Effort(2), 30);
         lunarH = visLunarIllumination(illu);
     end
     sightH = visPresence(plots(n).Detections, ...
-        'Resolution_m', resolution,'DateTickInterval',ytick,...
+        'Resolution_m', resolution,'DateTickInterval',YTick,...
         'LineStyle', 'none', 'DateRange', [start, stop],...
         'Effort', plots(n).Effort, 'Label', title,...
-        'HourTickInterval', xtick);
+        'HourTickInterval',XTick );
     set(gca, 'YDir', 'reverse');  %upside down plot
     
     if save
